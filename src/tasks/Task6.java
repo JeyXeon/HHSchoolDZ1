@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /*
 Имеются
@@ -23,7 +25,12 @@ public class Task6 implements Task {
   private Set<String> getPersonDescriptions(Collection<Person> persons,
                                             Map<Integer, Set<Integer>> personAreaIds,
                                             Collection<Area> areas) {
-    return new HashSet<>();
+    // Создаю мапу для хранения всех регионов по их id.
+    Map<Integer, Area> areasIds = areas.stream().collect(Collectors.toMap(Area::getId, area -> area));
+    // Для каждой персоны беру из мапы personAreaIds сет айдишником
+    // и map-ом для каждого из них вызываю функцию для сборки необходимой строки.
+    return persons.stream().flatMap(person -> personAreaIds.get(person.getId()).stream().map(
+        areaId -> (person.getFirstName() + " - " + areasIds.get(areaId).getName()))).collect(Collectors.toSet());
   }
 
   @Override
