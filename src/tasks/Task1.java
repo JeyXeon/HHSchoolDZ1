@@ -6,6 +6,7 @@ import common.Task;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,13 @@ public class Task1 implements Task {
   // !!! Редактируйте этот метод !!!
   private List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = PersonService.findPersons(personIds);
-    return Collections.emptyList();
+    // Создаю словарь id персоны -> персона. Скорость заполнения O(n).
+    Map<Integer, Person> order = persons.stream().collect(Collectors.toMap(
+        Person::getId, person -> person
+    ));
+    // Пробегаю по переданным id и для каждого получаю из созданного словаря персону и оборачиваю в лист.
+    // Взятие элемента O(1), пробег O(n). Того сложность O(n).
+    return personIds.stream().map(order::get).collect(Collectors.toList());
   }
 
   @Override
