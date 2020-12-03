@@ -23,12 +23,12 @@ public class Task1 implements Task {
   private List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = PersonService.findPersons(personIds);
     // Создаю словарь id персоны -> персона. Скорость заполнения O(n).
-    Map<Integer, Person> order = persons.stream().collect(Collectors.toMap(
+    Map<Integer, Person> personMap = persons.stream().collect(Collectors.toMap(
         Person::getId, person -> person
     ));
     // Пробегаю по переданным id и для каждого получаю из созданного словаря персону и оборачиваю в лист.
     // Взятие элемента O(1), пробег O(n). Того сложность O(n).
-    return personIds.stream().map(order::get).collect(Collectors.toList());
+    return personIds.stream().map(personMap::get).collect(Collectors.toList());
   }
 
   @Override
