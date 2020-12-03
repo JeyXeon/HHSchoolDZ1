@@ -29,8 +29,13 @@ public class Task6 implements Task {
     Map<Integer, Area> areasIds = areas.stream().collect(Collectors.toMap(Area::getId, area -> area));
     // Для каждой персоны беру из мапы personAreaIds сет айдишником
     // и map-ом для каждого из них вызываю функцию для сборки необходимой строки.
-    return persons.stream().flatMap(person -> personAreaIds.get(person.getId()).stream().map(
-        areaId -> (person.getFirstName() + " - " + areasIds.get(areaId).getName()))).collect(Collectors.toSet());
+    return persons.stream()
+        .flatMap(person -> personAreaIds
+            .get(person.getId())
+            .stream()
+            .map(areaId -> (person.getFirstName()
+                    + " - " + areasIds.get(areaId).getName()))
+        ).collect(Collectors.toSet());
   }
 
   @Override
