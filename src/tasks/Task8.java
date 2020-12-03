@@ -5,17 +5,8 @@ import common.Task;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/*
-А теперь о горьком
-Всем придется читать код
-А некоторым придется читать код, написанный мною
-Сочувствую им
-Спасите будущих жертв, и исправьте здесь все, что вам не по душе!
-P.S. функции тут разные и рабочие (наверное), но вот их понятность и эффективность страдает (аж пришлось писать комменты)
-P.P.S Здесь ваши правки желательно прокомментировать (можно на гитхабе в пулл реквесте)
- */
+
 public class Task8 implements Task {
 
   private long count;
@@ -27,6 +18,8 @@ public class Task8 implements Task {
       return Collections.emptyList();
     }
     // Включил шаг с пропуском элемента в ретутрн стейтмент (skip).
+    // Использовал skip, чтобы пропуск происходил при перволм пробеге,
+    // так как, используя ремув, сначала сформируется поток, а потом побежит удалять элемент.
     return persons.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList());
   }
 
@@ -38,44 +31,33 @@ public class Task8 implements Task {
 
   //Получение полного имени
   public String convertPersonToString(Person person) {
-    String result = "";
-    if (person.getSecondName() != null) {
-      result += person.getSecondName();
-    }
-
-    if (person.getFirstName() != null) {
-      result += " " + person.getFirstName();
-    }
-
-    if (person.getSecondName() != null) {
-      result += " " + person.getSecondName();
-    }
-    return result;
+    return String.join(" ",
+        person.getSecondName(),
+        person.getFirstName(),
+        person.getMiddleName());
   }
 
   // словарь id персоны -> ее имя
   public Map<Integer, String> getPersonNames(Collection<Person> persons) {
     // Применил уже написанный ранее метод для получения имени.
-    return persons.stream().collect(Collectors.toMap(Person::getId, this::convertPersonToString));
+    return new HashSet<>(persons).stream().collect(Collectors.toMap(Person::getId, this::convertPersonToString));
   }
 
   // есть ли совпадающие в двух коллекциях персоны?
   public boolean hasSamePersons(Collection<Person> persons1, Collection<Person> persons2) {
     // Сократил проверку.
-    boolean has = false;
-    for (Person person : persons1) {
-      if (persons2.contains(person)) {
-        has = true;
-        break;
-      }
-    }
-    return has;
+    // Переписал, здесь сложность O(n) должна быть.
+    Set<Person> persons = new HashSet<>();
+    persons.addAll(persons1);
+    persons.addAll(persons2);
+    return persons.size() < persons1.size() + persons2.size();
   }
 
   // Количество четных чисел
-  public long countEven(Stream<Integer> numbers) {
+  //Правильнее передавать в метод коллекцию, и уже потом создавать стрим
+  public long countEven(Collection<Integer> numbers) {
     count = 0;
-    numbers.filter(num -> num % 2 == 0).forEach(num -> count++);
+    numbers.stream().filter(num -> num % 2 == 0).forEach(num -> count++);
     return count;
   }
 
